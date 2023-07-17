@@ -1,0 +1,50 @@
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h4>Lista de Prestamos</h4>
+        </div>
+        <div class="card-body">
+          <button (click)="cambiarEstado()" [disabled]="!hayRegistrosSeleccionados" class="mb-3 btn btn-primary">Cambiar Estado</button>
+          <button (click)="eliminarRegistros()" [disabled]="!hayRegistrosSeleccionados" class="mb-3 btn btn-danger mx-3">Eliminar Registros</button>
+            
+            <table class="table table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th></th>
+                  <th class="text-center">#</th>
+                  <th class="text-center">Llave</th>
+                  <th class="text-center">Usuario</th>
+                  <th class="text-center">Rol</th>
+                  <th class="text-center">Estado_Llave</th>
+                  <th class="text-center">Estado</th>
+                  <!-- <th class="text-center">Acciones</th> -->
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let param of param">
+                  <ng-container *ngIf="param.estado">
+                    <tr [class.selected]="param.seleccionado" class="text-center">
+                      <td>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" [(ngModel)]="param.seleccionado" (click)="seleccionarRegistro(param)" (dblclick)="evitarDobleClic($event)">
+                          <label class="form-check-label" for="checkbox{{param.id}}"></label>
+                        </div>
+                      </td>
+                      <td>{{param.id}}</td>
+                      <td>{{param.id_llave !== undefined ? obtenerNombreLlave(param.id_llave) : '' }}</td>
+                      <td>{{param.id_usuario !== undefined ? obtenerNombreUsuario(param.id_usuario) : '' }}</td>
+                      <td>{{ param.id_usuario !== undefined ? obtenerNombreRol(obtenerRolUsuario(param.id_usuario)) : '' }}</td>
+                      <td>{{param.estadoLlave}}</td>
+                      <td [ngClass]="{'text-success': param.estado}">{{param.estado ? 'Activo' : 'Inactivo' }}</td>
+                      <!-- <td>
+                        <button class="btn btn-warning">Editar</button>
+                      </td> -->
+                    </tr>
+                  </ng-container>
+                </ng-container>
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h4>Lista de Llaves</h4>
+        </div>
+        <div class="card-body">
+            <button (click)="cambiarEstado(registrosSeleccionados)" [disabled]="!hayRegistrosSeleccionados" class="mb-3 btn btn-primary">Cambiar Estado</button>
+            <button (click)="eliminarRegistros()" [disabled]="!hayRegistrosSeleccionados" class="mb-3 btn btn-danger mx-3">Eliminar Registros</button>
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th></th>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Ambiente</th>
+                        <th class="text-center">Piso</th>
+                        <th class="text-center">Estado</th>
+                        <!-- <th class="text-center">Acciones</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let llave of llaves">
+                        <tr [class.selected]="llave.seleccionado" class="text-center">
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="llave.seleccionado" (click)="seleccionarRegistro(llave)" (dblclick)="evitarDobleClic($event)">
+                                <label class="form-check-label" for="checkbox{{llave.id}}"></label>
+                            </div>
+                        </td>
+                            <td>{{llave.id}}</td>
+                            <td>{{llave.ambiente}}</td>
+                            <td>{{llave.piso}}</td>
+                            <td [ngClass]="{'text-danger': !llave.estado, 'text-success': llave.estado}">
+                                {{ llave.estado ? 'Activo' : 'Inactivo' }}
+                            </td>
+                            <!-- <td>
+                                <button class="btn btn-warning">Editar</button>
+                            </td> -->
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

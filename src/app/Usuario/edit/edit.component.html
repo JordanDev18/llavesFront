@@ -1,0 +1,77 @@
+<!-- <div class="container col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <h3>Actualizar Usuario</h3>
+        </div>
+        <div class="card-body">
+            <form action="" class="row">
+                <div class="form-group col-md-6 mb-2">
+                    <label for="">id:</label>
+                    <input type="text" class="form-control" id="id" [(ngModel)] = "usuario.id" name="id">
+                </div>
+                <div class="form-group col-md-6 mb-2">
+                    <label for="">Nombres:</label>
+                    <input type="text" class="form-control" id="nombre" [(ngModel)] = "usuario.nombre" name="nombre">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="">Apellidos</label>
+                    <input type="text" class="form-control" id="apellido" [(ngModel)] = "usuario.apellido" name="apellido">
+                </div>
+                <div class="form-group col-md-6 mb-2">
+                    <label for="">Documento:</label>
+                    <input type="text" class="form-control" id="documento" [(ngModel)] = "usuario.documento" name="documento">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="">Email:</label>
+                    <input type="email" class="form-control" id="email" [(ngModel)] = "usuario.email" name="email">
+                </div>
+                <div class="form-group col-md-6 mb-2">
+                    <label for="">Contraseña:</label>
+                    <input type="password" class="form-control" id="password" [(ngModel)] = "usuario.password" name="password">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="">Rol</label>
+                    <input type="text" class="form-control" id="id_rol" [(ngModel)] = "usuario.id_rol" name="id_rol">
+                </div>
+                <div class="form-group col-md-12 mb-3">
+                    <label for="">Estado</label>
+                    <input type="text" class="form-control" id="estado" [(ngModel)] = "usuario.estado" name="estado">
+                </div>
+                <div class="d-grid gap-2 col-3 mx-auto">
+                    <button (click)="Actualizar(usuario)" class="btn btn-primary ml-3">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> -->
+
+<div class="col-md-6 offset-md-3">
+    <h3 class="text-center">Edición de Actor</h3>
+    <form (ngSubmit)= "onSubmit()">
+      <div class="form-group mt-2">
+        <label>Nombre: </label>
+        <input type = "text" class="form-control" id = "nombre" [(ngModel)] = "usuario.nombre"
+        name = "nombre" required minlength="4" maxlength="10" placeholder="Digite su nombre "
+        #nombre = "ngModel">
+      </div>
+      <div class="form-group mt-2">
+        <label>Apellido: </label>
+        <input type = "text" class="form-control" id = "apellido" [(ngModel)] = "usuario.apellido"
+        name = "apellido" required minlength="4" maxlength="10" placeholder="Digite su apellido"
+        #apellido = "ngModel">
+      </div> 
+      <div class="form-group mt-2">
+        <label>Documento: </label>
+        <input type = "text" class="form-control" id = "documento" [(ngModel)] = "usuario.documento"
+        name = "documento" required minlength="4" maxlength="10" placeholder="Digite su documento "
+        #documento = "ngModel">
+      </div> 
+      <div class="form-group mt-2">
+        <label>Email: </label>
+        <input type = "email" class="form-control" id = "email" [(ngModel)] = "usuario.email"
+        name = "email" required minlength="4" maxlength="10" placeholder="Digite su apellido "
+        #email = "ngModel">
+      </div> 
+      <button class="btn btn-success mt-2" >Guardar</button>
+    </form>
+  </div>

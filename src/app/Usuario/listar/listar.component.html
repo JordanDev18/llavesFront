@@ -1,0 +1,50 @@
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h4>Lista de Usuarios</h4>
+        </div>
+        <div class="card-body">
+            <button (click)="cambiarEstado(registrosSeleccionados)" [disabled]="!hayRegistrosSeleccionados" class="mb-3 btn btn-primary">Cambiar Estado</button>
+            <button (click)="eliminarRegistros()" [disabled]="!hayRegistrosSeleccionados" class="mb-3 btn btn-danger mx-3">Eliminar Registros</button>
+            <table class="table table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th></th>
+                  <th>#</th>
+                  <th class="text-center">Nombres</th>
+                  <th class="text-center">Apellidos</th>
+                  <th class="text-center">Documento</th>
+                  <th class="text-center">Email</th>
+                  <th class="text-center">Rol</th>
+                  <th class="text-center">Estado</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let user of usuarios">
+                    <tr [class.selected]="user.seleccionado" class="text-center">
+                      <td>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" [(ngModel)]="user.seleccionado" (click)="seleccionarRegistro(user)" (dblclick)="evitarDobleClic($event)">
+                          <label class="form-check-label" for="checkbox{{user.id}}"></label>
+                        </div>
+                      </td>
+                      <td>{{user.id}}</td>
+                      <td>{{user.nombre}}</td>
+                      <td>{{user.apellido}}</td>
+                      <td>{{user.documento}}</td>
+                      <td>{{user.email}}</td>
+                      <td>{{user.id_rol !== undefined ? obtenerNombreRol(user.id_rol) : '' }}</td>
+                      <td [ngClass]="{'text-danger': !user.estado, 'text-success': user.estado}">
+                        {{ user.estado ? 'Activo' : 'Inactivo' }}
+                      </td>
+                      <td>
+                        <button (click)="actualizarActor(user.id)" class="btn btn-warning">Editar</button>
+                      </td>
+                    </tr>
+                  </ng-container>
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
