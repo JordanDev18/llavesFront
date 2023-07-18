@@ -1,0 +1,11 @@
+.navbar-container {
+    height: 100%;
+  }
+  
+.mat-expansion-panel-header {
+    font-size: 16px;
+    font-weight: bold;
+}
+.nav-icon {
+    margin-right: 8px; /* Espacio entre el icono y el texto */
+}

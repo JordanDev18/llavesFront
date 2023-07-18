@@ -20,6 +20,11 @@ import { ListarLlavesComponent } from './Llaves/listar-llaves/listar-llaves.comp
 import { AddLlavesComponent } from './Llaves/add-llaves/add-llaves.component';
 import { EditLlavesComponent } from './Llaves/edit-llaves/edit-llaves.component';
 import { HistorialPrestamosComponent } from './Parametros/historial-prestamos/historial-prestamos.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -43,7 +48,12 @@ import { HistorialPrestamosComponent } from './Parametros/historial-prestamos/hi
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatExpansionModule,
+    MatIconModule,
+    MatListModule,
+    MatSidenavModule
   ],
   providers: [ServiceService],
   bootstrap: [AppComponent]

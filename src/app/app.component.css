@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    height: 100vh; /* Ajusta la altura según tus necesidades */
+  }
+  
+  .navbar-container {
+    background-color: #1976d2; /* Color de fondo del Navbar */
+    min-width: 200px; /* Ancho mínimo del Navbar */
+  }
+  
+  .content-container {
+    flex: 1; /* Ocupa el espacio restante disponible */
+
+  }
+  
