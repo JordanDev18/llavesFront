@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { Llaves } from 'src/app/Model/Llaves';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { SelectionModel } from '@angular/cdk/collections';
 import { Parametros } from 'src/app/Model/Parametros';
 import { Roles } from 'src/app/Model/Roles';
 import { Usuarios } from 'src/app/Model/Usuarios';
+import { Llaves } from 'src/app/Model/Llaves';
 import { ServiceService } from 'src/app/Service/service.service';
 import Swal from 'sweetalert2';
-import  swal  from 'sweetalert2';
 
 @Component({
   selector: 'app-listar-param',
@@ -15,19 +16,22 @@ import  swal  from 'sweetalert2';
 })
 export class ListarParamComponent {
   
-  param:Parametros[] = [];
-  usuarios: Usuarios[]= [];
-  roles: Roles[] = []; // Donde Rol es el tipo de objeto para tus roles
-  llaves:Llaves[]= [];
-
-  constructor(private service:ServiceService, private router: Router){}
+  param: Parametros[] = [];
+  usuarios: Usuarios[] = [];
+  roles: Roles[] = [];
+  llaves: Llaves[] = [];
+  displayedColumns: string[] = ['select', 'id', 'id_llave', 'id_usuario', 'rol', 'estadoLlave', 'estado', 'acciones'];
+  selection = new SelectionModel<Parametros>(true, []);
+  
+  constructor(private service: ServiceService) { }
 
   ngOnInit() {
     this.obtenerParametros();
     this.obtenerUsuarios();
-    this.obtenerLlaves()
+    this.obtenerLlaves();
     this.obtenerRoles();
   }
+  
   obtenerParametros() {
     this.service.obtenerListadoDeParametros().subscribe(data => {
       this.param = data;
@@ -46,8 +50,7 @@ export class ListarParamComponent {
     });
   }
 
-  // Lógica para obtener la lista de roles desde tu servicio
-  obtenerRoles(): void {
+  obtenerRoles() {
     this.service.obtenerListadoDeRoles().subscribe(data => {
       this.roles = data;
     });
@@ -57,22 +60,25 @@ export class ListarParamComponent {
     const rol = this.roles.find(rol => rol.id === id);
     return rol && rol.tipoRol ? rol.tipoRol : '';
   }
+  
   obtenerNombreLlave(id: number): string {
     const llave = this.llaves.find(llave => llave.id === id);
     return llave && llave.ambiente ? llave.ambiente : '';
   }
+  
   obtenerNombreUsuario(id: number): string {
-    const usu = this.usuarios.find(usu => usu.id === id);
-    return usu && usu.nombre ? usu.nombre : '';
+    const usuario = this.usuarios.find(usuario => usuario.id === id);
+    return usuario && usuario.nombre ? usuario.nombre : '';
   }
+  
   obtenerRolUsuario(id: number): number {
-    const usu = this.usuarios.find(usu => usu.id === id);
-    return usu && usu.id_rol ? usu.id_rol : 0;
+    const usuario = this.usuarios.find(usuario => usuario.id === id);
+    return usuario && usuario.id_rol ? usuario.id_rol : 0;
   }
 
-  eliminarParametro(id:number){
+  eliminarParametro(id: number) {
     Swal.fire({
-      title: '¿Estás seguro de elimnarlo?',
+      title: '¿Estás seguro de eliminarlo?',
       text: 'Confirma si deseas eliminar el Prestamo',
       icon: 'warning',
       showCancelButton: true,
@@ -81,82 +87,101 @@ export class ListarParamComponent {
       confirmButtonText: 'Sí, eliminalo!',
       cancelButtonText: 'No, cancelar'
     }).then((result) => {
-      if(result.value){
+      if (result.isConfirmed) {
         this.service.deleteParametro(id).subscribe(dato => {
-        console.log(dato);
-        this.obtenerParametros();
-      });
+          console.log(dato);
+          this.obtenerParametros();
+        });
       }
-    })
-  }
-
-  registrosSeleccionados: any[] = [];
-
-  cambiarEstado() {
-    this.registrosSeleccionados.forEach((param) => {
-      this.guardarEstadoParametro(param);
     });
   }
-  
-  seleccionarRegistro(param: any) {
-    param.seleccionado = !param.seleccionado;
-    this.registrosSeleccionados = this.param.filter((p) => p.seleccionado);
-    this.hayRegistrosSeleccionados = this.registrosSeleccionados.length > 0;
+
+  masterToggle() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+    } else {
+      this.param.forEach(row => this.selection.select(row));
+    }
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.param.length;
+    return numSelected === numRows;
+  }
+
+  seleccionarRegistro(param: Parametros) {
+    this.selection.toggle(param);
+    this.hayRegistrosSeleccionados = this.selection.selected.length > 0;
   }
   
   hayRegistrosSeleccionados: boolean = false;
   
-  evitarDobleClic(event: MouseEvent) {
-    event.stopPropagation();
+  cambiarEstado() {
+    this.selection.selected.forEach((param) => {
+      this.guardarEstadoParametro(param);
+    });
   }
   
-  registroSeleccionadoId: number | null = null;
-
   guardarEstadoParametro(param: Parametros) {
-    param.estado = !param.estado; // Cambiar el estado localmente
-    param.estadoLlave = 'devuelta'; // Cambiar el estado_llave localmente
+    const nuevoEstado = !param.estado; // Cambiar el estado
+    const nuevoEstadoLlave = 'devuelta'; // Cambiar el estado_llave
   
-    this.service.updateParametro(param.id, param).subscribe(
+    const parametrosActualizados: Parametros = {
+      ...param, // Copiar todas las propiedades del objeto param
+      estado: nuevoEstado,
+      estadoLlave: nuevoEstadoLlave
+    };
+  
+    // Lógica para actualizar el estado del parámetro en la base de datos o en la lógica de negocio
+    this.service.updateParametro(parametrosActualizados.id, parametrosActualizados).subscribe(
       (response) => {
         // Éxito: Actualizar el registro en la base de datos
         console.log('Estado del parámetro actualizado en la base de datos:', response);
-        swal.fire('Cambio de Estado Registrado',`La llave ha sido devuelta con exito, podra ver el prestamo en el historial!`,`success`);
+        Swal.fire('Cambio de Estado Registrado', 'El estado ha sido cambiado con éxito.', 'success');
       },
       (error) => {
         // Error: Manejar el error en caso de fallo en la actualización
         console.error('Error al actualizar el estado del parámetro:', error);
+        Swal.fire('Error', 'Hubo un error al cambiar el estado del parámetro.', 'error');
       }
     );
   }
   
   eliminarRegistros() {
-    // Obtener los registros seleccionados
-    const registrosSeleccionados = this.param.filter((param: any) => param.seleccionado);
-    // Verificar si hay registros seleccionados
+    const registrosSeleccionados = this.selection.selected;
+  
     if (registrosSeleccionados.length > 0) {
-      // Eliminar los registros llamando al servicio
-      registrosSeleccionados.forEach((registro: any) => {
-        this.service.deleteParametro(registro.id).subscribe(
-          () => {
-            // Eliminar el registro de la lista
-            const index = this.param.indexOf(registro);
-            Swal.fire('Registro Eliminado', 'El registro ha sido eliminado con éxito!', 'success');
-            if (index !== -1) {
-              this.param.splice(index, 1);
-            }
-          },
-          (error: any) => {
-            console.error('Error al eliminar el registro:', error);
-          }
-        );
+      Swal.fire({
+        title: '¿Estás seguro de eliminar los registros seleccionados?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          registrosSeleccionados.forEach((registro: Parametros) => {
+            this.service.deleteParametro(registro.id).subscribe(
+              () => {
+                const index = this.param.indexOf(registro);
+                Swal.fire('Registro Eliminado', 'El registro ha sido eliminado con éxito.', 'success');
+                if (index !== -1) {
+                  this.param.splice(index, 1);
+                }
+              },
+              (error: any) => {
+                console.error('Error al eliminar el registro:', error);
+              }
+            );
+          });
+  
+          this.selection.clear();
+          this.hayRegistrosSeleccionados = false;
+        }
       });
-      
-      // Reiniciar la selección y desactivar el botón
-      this.param.forEach((param: any) => {
-        param.seleccionado = false;
-      });
-      this.hayRegistrosSeleccionados = false;
     }
   }
-  
 }
